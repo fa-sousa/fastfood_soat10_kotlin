@@ -1,6 +1,6 @@
 package com.fastfood.order.domain
 
-import com.fastfood.items.model.OrderItem
+import com.fastfood.order.domain.model.OrderItem
 import java.time.LocalDateTime
 
 data class Order(

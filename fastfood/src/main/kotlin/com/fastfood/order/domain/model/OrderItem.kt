@@ -1,4 +1,4 @@
-package com.fastfood.items.model
+package com.fastfood.order.domain.model
 
 data class OrderItem(
     val productId: Long,

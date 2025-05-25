@@ -1,7 +1,7 @@
 package com.fastfood.order.service
 
 import com.fastfood.client.repository.ClientRepository
-import com.fastfood.items.model.OrderItem
+import com.fastfood.order.domain.model.OrderItem
 import com.fastfood.order.domain.Order
 import com.fastfood.order.domain.OrderStatus
 import com.fastfood.order.mapper.OrderMapper
