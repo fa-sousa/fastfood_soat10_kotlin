@@ -1,6 +1,5 @@
-package com.fastfood.order.model
+package com.fastfood.order.entity
 
-import com.fastfood.product.model.ProductEntity
 import jakarta.persistence.*
 
 @Entity
@@ -12,13 +11,9 @@ data class OrderItemEntity(
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_id")
-    val order: OrderEntity,
+    var order: OrderEntity? = null,
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "product_id")
-    val product: ProductEntity,
-
+    val productId: Long,
     val quantity: Long,
-
     val itemValue: Double
 )

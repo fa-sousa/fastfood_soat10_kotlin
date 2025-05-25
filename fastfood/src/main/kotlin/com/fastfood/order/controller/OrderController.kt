@@ -1,6 +1,6 @@
 package com.fastfood.order.controller
 
-import com.fastfood.order.model.Order
+import com.fastfood.order.domain.Order
 import com.fastfood.order.service.OrderService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity

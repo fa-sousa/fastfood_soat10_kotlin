@@ -1,6 +1,7 @@
-package com.fastfood.order.model
+package com.fastfood.order.entity
 
 import com.fastfood.client.model.ClientEntity
+import com.fastfood.order.domain.OrderStatus
 import jakarta.persistence.*
 import java.time.LocalDateTime
 
@@ -15,9 +16,8 @@ class OrderEntity(
 
     var discountValue: Double = 0.0,
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "client_id")
-    val client: ClientEntity,
+    @Column(name = "client_id")
+    val clientId: Long,
 
     @OneToMany(mappedBy = "order", cascade = [CascadeType.ALL], orphanRemoval = true)
     val orderItems: MutableList<OrderItemEntity> = mutableListOf(),

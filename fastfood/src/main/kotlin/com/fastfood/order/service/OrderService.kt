@@ -1,9 +1,10 @@
 package com.fastfood.order.service
 
 import com.fastfood.client.repository.ClientRepository
-import com.fastfood.order.model.Order
-import com.fastfood.order.model.OrderItem
-import com.fastfood.order.model.OrderStatus
+import com.fastfood.items.model.OrderItem
+import com.fastfood.order.domain.Order
+import com.fastfood.order.domain.OrderStatus
+import com.fastfood.order.mapper.OrderMapper
 import com.fastfood.order.repository.OrderRepository
 import com.fastfood.product.service.ProductService
 import org.springframework.stereotype.Service
@@ -11,13 +12,16 @@ import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDateTime
 
 @Service
-class OrderService(
+open class OrderService(
     private val orderRepository: OrderRepository,
     private val productService: ProductService,
-    private val clientRepository: ClientRepository
+    private val clientRepository: ClientRepository,
+    private val orderMapper: OrderMapper
 ) {
+    data class OrderItemRequest(val productId: Long, val quantity: Long)
+
     @Transactional
-    fun createOrder(clientId: Long, itemsRequest: List<OrderItemRequest>): Order {
+    open fun createOrder(clientId: Long, itemsRequest: List<OrderItemRequest>): Order {
         val client = clientRepository.findById(clientId)
             .orElseThrow { RuntimeException("Cliente não encontrado com ID: $clientId") }
 
@@ -25,7 +29,6 @@ class OrderService(
 
         val items = itemsRequest.map {
             val product = productService.buscarPorId(it.productId)
-
             OrderItem(
                 productId = it.productId,
                 quantity = it.quantity,
@@ -40,27 +43,28 @@ class OrderService(
         val order = Order(
             clientId = client.id!!,
             dateOrder = now,
-            orderItems = items,
             discountValue = discount,
             totalValue = finalValue,
-            status = OrderStatus.PENDING
+            status = OrderStatus.PENDING,
+            orderItems = items
         )
 
-        return orderRepository.save(order) // Assuma que o repo converte Order -> OrderEntity
+        val entity = orderMapper.toEntity(order)
+        entity.orderItems.forEach { it.order = entity }
+
+        return orderMapper.toDomain(orderRepository.save(entity))
     }
 
-    data class OrderItemRequest(val productId: Long, val quantity: Long)
-
     @Transactional
-    fun finalizeOrder(orderId: Long): Order {
-        val order = orderRepository.findById(orderId)
+    open fun finalizeOrder(orderId: Long): Order {
+        val entity = orderRepository.findById(orderId)
             .orElseThrow { RuntimeException("Pedido não encontrado com ID: $orderId") }
 
-        if (order.status != OrderStatus.PENDING) {
-            throw RuntimeException("Pedido não pode ser finalizado, status atual: ${order.status}")
+        if (entity.status != OrderStatus.PENDING) {
+            throw RuntimeException("Pedido não pode ser finalizado, status atual: ${entity.status}")
         }
 
-        order.orderItems.forEach { item ->
+        entity.orderItems.forEach { item ->
             val product = productService.buscarPorId(item.productId)
 
             if (product.amount < item.quantity) {
@@ -70,11 +74,11 @@ class OrderService(
             productService.atualizarEstoque(product.id!!, product.amount - item.quantity)
         }
 
-        val updatedOrder = order.copy(status = OrderStatus.PROCESSING)
-        return orderRepository.save(updatedOrder)
+        entity.status = OrderStatus.PROCESSING
+        return orderMapper.toDomain(orderRepository.save(entity))
     }
 
-    fun getAllOrders(): List<Order> {
-        return orderRepository.findAll()
+    open fun getAllOrders(): List<Order> {
+        return orderRepository.findAll().map { orderMapper.toDomain(it) }
     }
 }

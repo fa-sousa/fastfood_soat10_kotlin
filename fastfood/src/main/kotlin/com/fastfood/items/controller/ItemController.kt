@@ -1,7 +1,7 @@
 package com.fastfood.items.controller
 
-import com.fastfood.items.model.OrderItems
 import com.fastfood.items.repository.ItemRepository
+import com.fastfood.order.entity.OrderItemEntity
 import jakarta.validation.Valid
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
@@ -16,15 +16,15 @@ class ItemController {
     private val iRepository: ItemRepository? = null
 
     @get:GetMapping
-    val all: ResponseEntity<MutableList<OrderItems?>?>
-        get() = ResponseEntity.ok<MutableList<OrderItems?>?>(iRepository!!.findAll())
+    val all: ResponseEntity<MutableList<OrderItemEntity?>?>
+        get() = ResponseEntity.ok<MutableList<OrderItemEntity?>?>(iRepository!!.findAll())
 
     @PutMapping
-    fun put(@RequestBody oItems: @Valid OrderItems): ResponseEntity<OrderItems?> {
+    fun put(@RequestBody oItems: @Valid OrderItemEntity): ResponseEntity<OrderItemEntity?> {
         if (iRepository!!.existsById(oItems.id)) {
             return ResponseEntity.status(HttpStatus.OK)
-                .body<OrderItems?>(iRepository.save<OrderItems?>(oItems))
+                .body<OrderItemEntity?>(iRepository.save<OrderItemEntity?>(oItems))
         }
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).build<OrderItems?>()
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).build<OrderItemEntity?>()
     }
 }

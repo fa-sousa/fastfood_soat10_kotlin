@@ -1,6 +1,8 @@
 package com.fastfood.order.repository
 
-import com.fastfood.order.model.Order
+import com.fastfood.order.entity.OrderEntity
 import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.stereotype.Repository
 
-interface OrderRepository : JpaRepository<Order, Long>
+@Repository
+interface OrderRepository : JpaRepository<OrderEntity, Long>

@@ -1,4 +1,4 @@
-package com.fastfood.order.model
+package com.fastfood.order.domain
 
 enum class OrderStatus(val description: String) {
     PENDING("Pendente"),
