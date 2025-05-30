@@ -119,8 +119,8 @@
     </dependencies>
 
     <build>
-        <sourceDirectory>src/main/kotlin</sourceDirectory>
-        <testSourceDirectory>src/test/kotlin</testSourceDirectory>
+        <sourceDirectory>application/src/main/kotlin</sourceDirectory>
+        <testSourceDirectory>application/src/test/kotlin</testSourceDirectory>
 
         <plugins>
             <plugin>

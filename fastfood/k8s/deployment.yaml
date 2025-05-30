@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fastfood-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: fastfood
+  template:
+    metadata:
+      labels:
+        app: fastfood
+    spec:
+      containers:
+        - name: fastfood
+          image: fastfood-app:latest
+          ports:
+            - containerPort: 8080

@@ -1,0 +1,16 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: fastfood-ingress
+spec:
+  rules:
+    - host: fastfood.local
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: fastfood-service
+                port:
+                  number: 80
